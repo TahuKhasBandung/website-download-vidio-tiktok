@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Video Downloader</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0b1220;
+      padding: 40px;
+      color: #e2e8f0;
+    }
+    .card {
+      max-width: 520px;
+      margin: auto;
+      background: #111827;
+      padding: 25px;
+      border-radius: 18px;
+      box-shadow: 0 4px 30px rgba(0, 0, 50, 0.4);
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    h2 {
+      color: #60a5fa;
+      text-align: center;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid #1e293b;
+      margin-top: 12px;
+      background: #0f172a;
+      color: #e2e8f0;
+    }
+    input::placeholder {
+      color: #64748b;
+    }
+    button {
+      width: 100%;
+      padding: 14px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      margin-top: 20px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 17px;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: #1d4ed8;
+    }
+    #result {
+      margin-top: 22px;
+      text-align: center;
+    }
+    a {
+      color: #3b82f6;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Downloader TikTok & Instagram</h2>
+    <p>Tempel URL video di bawah ini:</p>
+    <input type="text" id="url" placeholder="https://www.tiktok.com/... atau https://www.instagram.com/..." />
+    <button onclick="downloadVideo()">Download</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    async function downloadVideo() {
+      const url = document.getElementById("url").value.trim();
+      const result = document.getElementById("result");
+      result.innerHTML = "Memproses...";
+
+      try {
+        // Menggunakan API gratis pihak ketiga
+        const api = `https://api.akuari.my.id/downloader/tiktok?link=${encodeURIComponent(url)}`;
+        const api2 = `https://api.akuari.my.id/downloader/ig?link=${encodeURIComponent(url)}`;
+
+        let res = await fetch(url.includes("tiktok") ? api : api2);
+        let data = await res.json();
+
+        if (!data || !data.result) {
+          result.innerHTML = "Gagal mengambil data!";
+          return;
+        }
+
+        const dl = data.result.video || data.result.url || data.result;
+
+        result.innerHTML = `<a href="${dl}" target="_blank">Klik di sini untuk download</a>`;
+      } catch (e) {
+        result.innerHTML = "Terjadi kesalahan!";
+      }
+    }
+  </script>
+  <style>
+    .fade {
+      opacity: 0;
+      transform: translateY(10px);
+      animation: fadeIn 0.7s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+
+  <script>
+    // Tambahkan fade-out saat mengganti hasil
+    function fadeOut(el) {
+      el.style.transition = "opacity 0.4s";
+      el.style.opacity = 0;
+      return new Promise(resolve => setTimeout(resolve, 400));
+    }
+
+    async function downloadVideo() {
+      const url = document.getElementById("url").value.trim();
+      const result = document.getElementById("result");
+
+      await fadeOut(result);
+      result.innerHTML = "Memproses...";
+      result.classList.add("fade");
+      result.style.opacity = 1;
+
+      try {
+        const api = `https://api.akuari.my.id/downloader/tiktok?link=${encodeURIComponent(url)}`;
+        const api2 = `https://api.akuari.my.id/downloader/ig?link=${encodeURIComponent(url)}`;
+
+        let res = await fetch(url.includes("tiktok") ? api : api2);
+        let data = await res.json();
+
+        if (!data || !data.result) {
+          result.innerHTML = "Gagal mengambil data!";
+          return;
+        }
+
+        const dl = data.result.video || data.result.url || data.result;
+        result.innerHTML = `<a href="${dl}" target="_blank">Klik di sini untuk download</a>`;
+      } catch (e) {
+        result.innerHTML = "Terjadi kesalahan!";
+      }
+    }
+  </script>
+
+  <footer style="text-align:center;margin-top:40px;color:#475569;font-size:14px;">
+    © 2025 — Website ini dikelola oleh <strong>Admin</strong>
+  </footer>
+
+</body>
+</html>
